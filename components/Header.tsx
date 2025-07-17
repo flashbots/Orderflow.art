@@ -60,7 +60,7 @@ export default function Header() {
             </div>
             <div className="mb-3 mt-5">
               <a
-                href="https://github.com/JadenDurnford/Orderflow.art"
+                href="https://github.com/flashbots/Orderflow.art"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-1 text-sm text-gray-700 underline transition-opacity hover:opacity-70"
