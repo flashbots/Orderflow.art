@@ -60,14 +60,6 @@ export default function SankeyRender() {
   return (
     <>
       <div className="border border-b-0 border-dune-300 bg-dune-200 px-4 py-2 text-center">
-        <p className="text-sm text-dune-600">
-          We are working on increasing coverage for the latest order flow projects. Uniswap X V2 and
-          1inch Fusion V2 are coming soon!
-        </p>
-
-        <p>
-        Current mempool labels undercount public mempool portion and we are fixing the mempool-dumpster data integration on Dune.
-        </p>
 
 
       </div>
