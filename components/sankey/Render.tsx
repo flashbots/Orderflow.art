@@ -59,10 +59,7 @@ export default function SankeyRender() {
 
   return (
     <>
-      <div className="border border-b-0 border-dune-300 bg-dune-200 px-4 py-2 text-center">
 
-
-      </div>
       <div className="border border-dune-300">
         <SankeyFilter
           entityData={entitiesData?.entities}
