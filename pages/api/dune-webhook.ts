@@ -67,11 +67,13 @@ function parseDate(dateStr: string): string {
   return dateStr.replace(".000 UTC", "");
 }
 
-async function fetchExecutionResult(dataUri: string): Promise<any[]> {
-  console.log(`Fetching from data_uri: ${dataUri}`);
+async function fetchExecutionResult(executionId: string): Promise<any[]> {
+  // Construct the URL using execution_id
+  const url = `https://api.dune.com/api/v1/execution/${executionId}/results`;
+  console.log(`Fetching execution results from: ${url}`);
 
   try {
-    const response = await axios.get(dataUri, {
+    const response = await axios.get(url, {
       headers: {
         "X-Dune-API-Key": DUNE_API_KEY,
       },
@@ -153,7 +155,10 @@ export default async function handler(
 
   const payload = req.body as DuneWebhookPayload;
 
-  // Log the webhook payload
+  // Log the full webhook payload for debugging
+  console.log("Full webhook payload:", JSON.stringify(payload, null, 2));
+
+  // Log the webhook payload summary
   console.log("Webhook payload:", {
     execution_id: payload.query_result?.execution_id,
     query_id: payload.query_result?.query_id,
@@ -171,7 +176,6 @@ export default async function handler(
   }
 
   const queryId = payload.query_result.query_id;
-  const dataUri = payload.query_result.data_uri;
   const executionId = payload.query_result.execution_id;
 
   // Determine which query this is (orderflow or liquidity)
@@ -202,8 +206,8 @@ export default async function handler(
     await clickhouse.ping();
     console.log("Connected to ClickHouse");
 
-    // Fetch data from Dune execution result
-    const rows = await fetchExecutionResult(dataUri);
+    // Fetch data from Dune execution result using execution_id
+    const rows = await fetchExecutionResult(executionId);
 
     if (rows.length === 0) {
       console.log("No rows to upload");
