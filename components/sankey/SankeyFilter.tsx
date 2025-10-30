@@ -274,7 +274,7 @@ const SankeyFilter: FC<Props> = ({
 
   return (
     <div>
-      <div className="flex flex-col items-center border-b border-b-dune-300">
+      <div className="flex flex-col items-center border-b border-b-barter-purple">
         <div className="relative flex w-full flex-row">
           {[
             { name: "Retail Trade Volume", value: Sankey.Orderflow },
@@ -284,8 +284,8 @@ const SankeyFilter: FC<Props> = ({
               key={i}
               onClick={() => setGraphType(b.value)}
               disabled={graphType === b.value}
-              className={`text-md flex-1 bg-white px-4 py-2.5 font-bold shadow-none hover:bg-red-50 disabled:cursor-not-allowed disabled:rounded-b-none disabled:bg-red-100 disabled:hover:opacity-100 md:text-lg ${
-                i == 0 ? "border-r border-r-dune-300" : ""
+              className={`text-md flex-1 bg-white px-4 py-2.5 font-bold shadow-none hover:bg-barter-isabeline disabled:cursor-not-allowed disabled:rounded-b-none disabled:bg-barter-yellow disabled:text-white disabled:hover:opacity-100 md:text-lg ${
+                i == 0 ? "border-r border-r-barter-purple" : ""
               }`}
             >
               {b.name}
@@ -311,7 +311,7 @@ const SankeyFilter: FC<Props> = ({
 
             <div className="flex flex-col xl:flex-row">
               <div className="flex h-[39px] flex-1">
-                <div className="flex h-[39px] items-center border-b border-r border-b-dune-200 border-r-dune-200 bg-dune-50 px-4">
+                <div className="flex h-[39px] items-center border-b border-r border-b-barter-blue border-r-barter-blue bg-barter-isabeline px-4">
                   <span className="text-sm font-bold">{"Tx Hash"}</span>
                 </div>
                 <div className="flex-1">
@@ -322,7 +322,7 @@ const SankeyFilter: FC<Props> = ({
                   />
                 </div>
               </div>
-              <div className="min-w-[250px] flex-shrink xl:border-l xl:border-l-dune-200">
+              <div className="min-w-[250px] flex-shrink xl:border-l xl:border-l-barter-blue">
                 <StylizedSingleSelect
                   title={"Timeframe"}
                   value={timeframe}

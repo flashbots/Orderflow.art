@@ -60,7 +60,7 @@ export default function SankeyRender() {
   return (
     <>
 
-      <div className="border border-dune-300">
+      <div className="border border-barter-purple">
         <SankeyFilter
           entityData={entitiesData?.entities}
           entityFilter={sankeyData?.data?.entityFilter ?? ""}

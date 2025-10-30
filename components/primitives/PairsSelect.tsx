@@ -174,10 +174,10 @@ export default function PairsStylizedMultiSelect({
   }, [data, pairs]);
 
   return (
-    <div className="flex h-full flex-1 border-b border-b-dune-200">
+    <div className="flex h-full flex-1 border-b border-b-barter-blue">
       <div
         ref={containerRef}
-        className="flex flex-shrink-0 items-center border-r border-r-dune-200 bg-dune-50 px-4"
+        className="flex flex-shrink-0 items-center border-r border-r-barter-blue bg-barter-isabeline px-4"
       >
         <span className="text-ellipsis text-sm font-bold">
           {isOrderflow ? "Trade pair" : "Token pair"}
@@ -201,7 +201,7 @@ export default function PairsStylizedMultiSelect({
             option: () => "bg-white text-black cursor-pointer hover:bg-dblue-200 active:bg-white",
             group: () => "py-0 [&:first-child>div:first-child]:border-t-0",
             groupHeading: () =>
-              "text-base bg-dune-100 pt-0 mb-0 normal-case hover:bg-dune-150 border-y border-solid border-dune-200 cursor-pointer",
+              "text-base bg-barter-isabeline pt-0 mb-0 normal-case hover:bg-barter-blue/20 border-y border-solid border-barter-blue cursor-pointer",
             menuList: () => "pt-0 rounded",
             multiValue: () => "[&>div>div>input]:hidden",
           }}

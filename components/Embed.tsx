@@ -11,10 +11,10 @@ type Props = {
 
 const Embed: FC<Props> = ({ title, description, url, square, libmev }) => {
   return (
-    <div className={`w-full border border-dune-200 ${square ? "aspect-square" : ""}`}>
+    <div className={`w-full border border-barter-blue ${square ? "aspect-square" : ""}`}>
       {/* About */}
       {title && description && (
-        <div className="border-b border-b-dune-200 bg-dune-50 px-4 py-2">
+        <div className="border-b border-b-barter-blue bg-barter-isabeline px-4 py-2">
           {title && <h3 className="font-semibold">{title}</h3>}
           {description && <p className="text-sm">{description}</p>}
         </div>

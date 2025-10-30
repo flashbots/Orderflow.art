@@ -9,7 +9,7 @@ export default function Orderflowin({ Component, pageProps }: AppProps) {
   return (
     <>
       {/* Add global progressbar */}
-      <NextNProgress color="#1e1870" options={{ showSpinner: false }} showOnShallow={true} />
+      <NextNProgress color="#9486BD" options={{ showSpinner: false }} showOnShallow={true} />
       <Component {...pageProps} />
     </>
   );

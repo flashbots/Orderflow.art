@@ -25,7 +25,7 @@ const SankeyGraph: FC<Props> = ({ height, txHash, isLoading, data, rangeData, er
         <div className={`flex items-center justify-center`} style={{ height: `${height}px` }}>
           <h1 className="text-xl font-semibold">No data found for selected filters</h1>
         </div>
-        <div className="flex w-full flex-row justify-end bg-dune-50 p-1 font-mono">
+        <div className="flex w-full flex-row justify-end bg-barter-isabeline p-1 font-mono">
           <DataRange rangeData={rangeData} isPortrait={isPortrait} />
         </div>
       </div>
@@ -75,7 +75,7 @@ const SankeyGraph: FC<Props> = ({ height, txHash, isLoading, data, rangeData, er
             <Loader title="Loading Sankey Diagram..." />
           </div>
         )}
-        <div className="flex w-full flex-row justify-end bg-dune-50 p-1 font-mono">
+        <div className="flex w-full flex-row justify-end bg-barter-isabeline p-1 font-mono">
           <DataRange rangeData={rangeData} isPortrait={isPortrait} />
         </div>
       </div>
@@ -125,7 +125,7 @@ const SankeyGraph: FC<Props> = ({ height, txHash, isLoading, data, rangeData, er
             <Loader title="Loading Sankey Diagram..." />
           </div>
         )}
-        <div className="flex w-full flex-row justify-end bg-dune-50 p-1 font-mono">
+        <div className="flex w-full flex-row justify-end bg-barter-isabeline p-1 font-mono">
           <DataRange rangeData={rangeData} isPortrait={isPortrait} />
         </div>
       </div>
@@ -185,7 +185,7 @@ const SankeyGraph: FC<Props> = ({ height, txHash, isLoading, data, rangeData, er
             <Loader title="Loading Sankey Diagram..." />
           </div>
         )}
-        <div className="mt-4 flex w-full flex-row justify-end border-t border-t-dune-200 bg-dune-50 p-1 font-mono">
+        <div className="mt-4 flex w-full flex-row justify-end border-t border-t-barter-blue bg-barter-isabeline p-1 font-mono">
           <DataRange rangeData={rangeData} isPortrait={isPortrait} />
         </div>
       </div>

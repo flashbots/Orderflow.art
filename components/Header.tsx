@@ -3,30 +3,14 @@ import Image from "next/image";
 import Avatars from "@/components/Avatars";
 
 export default function Header() {
-  const blogpost = {
-    url: "https://writings.flashbots.net/illuminate-the-order-flow",
-    title: "Blog Post: Illuminating Ethereum's Order Flow Landscape",
-  };
-
   return (
     <header className="flex flex-col text-center">
-      <section className="border-b border-dune-300 bg-dune-200 px-4 py-2 transition-opacity hover:opacity-70">
-        <a
-          className="text-sm text-dune-600 underline"
-          href={blogpost.url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {blogpost.title}
-        </a>
-      </section>
-
       <section>
         {/* Title */}
-        <div className="flex w-full flex-col bg-dune-50 px-5 py-8 text-center">
+        <div className="flex w-full flex-col bg-barter-isabeline px-5 py-8 text-center">
           {/* General */}
           <div className="flex flex-col items-center">
-            <div className="flex flex-row items-center gap-1 pb-3">
+            <div className="flex flex-row items-center gap-3 pb-3">
               <a
                 href="https://flashbots.net"
                 target="_blank"
@@ -40,8 +24,24 @@ export default function Header() {
                   width={119}
                 />
               </a>
-              <span className="pt-[5px] font-serif text-gray-700">presents</span>
+              <span className="pt-[5px] font-serif text-gray-700">+</span>
+              <a
+                href="https://barterswap.xyz"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-opacity hover:opacity-70"
+              >
+                <Image
+                  src="/barter-horizontal-logo.png"
+                  alt="Barter logo"
+                  height={30}
+                  width={119}
+                />
+              </a>
             </div>
+            <p className="text-sm text-gray-600 pb-3">
+              Started by Flashbots, continued by Barter
+            </p>
 
             <Link href="/" className="transition-opacity hover:opacity-70">
               <h1 className="float-left text-4xl font-semibold sm:text-4xl">🎨 Orderflow.art</h1>
@@ -53,7 +53,7 @@ export default function Header() {
             <div className="mt-6">
               <Link
                 href="/methodology"
-                className="rounded-full bg-dune-600 px-6 py-3 text-sm text-white transition-opacity hover:opacity-70"
+                className="rounded-full bg-barter-purple px-6 py-3 text-sm text-white transition-opacity hover:opacity-70"
               >
                 Read our methodology →
               </Link>
@@ -85,6 +85,10 @@ export default function Header() {
                 {
                   path: "/avatars/jaden.jpg",
                   twitter: "https://twitter.com/JadenDurnford",
+                },
+                {
+                  path: "/avatars/barter.png",
+                  twitter: "https://x.com/BarterDeFi",
                 },
               ]}
             />

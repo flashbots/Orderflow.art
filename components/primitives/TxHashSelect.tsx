@@ -54,7 +54,7 @@ export default function StylizedTxHashSelect({
   }, [options, value]);
 
   return (
-    <div className="flex flex-1 border-b border-b-dune-200">
+    <div className="flex flex-1 border-b border-b-barter-blue">
       {/* Select dropdown */}
       <div className="flex flex-1">
         <Creatable

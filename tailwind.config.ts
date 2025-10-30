@@ -9,6 +9,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        barter: {
+          isabeline: "#F5F0F0",
+          yellow: "#FF8C20",
+          purple: "#9486BD",
+          rajah: "#FFA856",
+          blue: "#B3ABBF",
+        },
         dune: {
           50: "#feefec80",
           100: "#fef2f2",

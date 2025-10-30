@@ -14,7 +14,7 @@ export default function StylizedCreatableSelect({
   const [inputValue, setInputValue] = useState("");
 
   return (
-    <div className="flex flex-1 border-b border-b-dune-200">
+    <div className="flex flex-1 border-b border-b-barter-blue">
       <div className="flex flex-1">
         <Creatable
           value={value ? { label: value, value } : {}}

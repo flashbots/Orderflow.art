@@ -34,8 +34,8 @@ export default function EntitySelect({
       <div className="flex flex-1 flex-row xl:flex-col">
         {mempool && mempoolEnabled !== undefined && setMempoolEnabled !== undefined ? (
           <div
-            className={`flex flex-1 flex-row items-center justify-between border-b border-b-dune-200 bg-dune-50 px-4 ${
-              !firstChild && "xl:border-l xl:border-l-dune-200"
+            className={`flex flex-1 flex-row items-center justify-between border-b border-b-barter-blue bg-barter-isabeline px-4 ${
+              !firstChild && "xl:border-l xl:border-l-barter-blue"
             }`}
           >
             <div className="flex flex-1 justify-center py-2">
@@ -49,15 +49,15 @@ export default function EntitySelect({
           </div>
         ) : (
           <div
-            className={`flex flex-1 justify-center text-ellipsis border-b border-b-dune-200 bg-dune-50 px-4 py-2 ${
-              !firstChild && "xl:border-l xl:border-l-dune-200"
+            className={`flex flex-1 justify-center text-ellipsis border-b border-b-barter-blue bg-barter-isabeline px-4 py-2 ${
+              !firstChild && "xl:border-l xl:border-l-barter-blue"
             }`}
           >
             <span className="text-ellipsis whitespace-nowrap text-sm font-bold">{title}</span>
           </div>
         )}
         <div
-          className={`flex-1 border-b border-l border-b-dune-200 border-l-dune-200 ${
+          className={`flex-1 border-b border-l border-b-barter-blue border-l-barter-blue ${
             firstChild && "xl:border-l-0 xl:border-l-transparent"
           }`}
         >

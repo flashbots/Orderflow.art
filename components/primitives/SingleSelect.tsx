@@ -14,8 +14,8 @@ export default function StylizedSingleSelect({
   setValue: Dispatch<SetStateAction<SingleValue<SelectItem>>>;
 }) {
   return (
-    <div className="flex flex-1 border-b border-b-dune-200">
-      <div className="flex items-center border-r border-r-dune-200 bg-dune-50 px-4">
+    <div className="flex flex-1 border-b border-b-barter-blue">
+      <div className="flex items-center border-r border-r-barter-blue bg-barter-isabeline px-4">
         <span className="text-sm font-bold">{title}</span>
       </div>
 
