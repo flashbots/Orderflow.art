@@ -18,6 +18,7 @@
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
     "axios": "^1.6.2",
+    "caniuse-lite": "^1.0.30001752",
     "ioredis": "^5.3.2",
     "lucide-react": "^0.294.0",
     "moment-timezone": "^0.5.43",

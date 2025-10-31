@@ -42,7 +42,7 @@ const SankeyGraph: FC<Props> = ({ height, txHash, isLoading, data, rangeData, er
                   type: "sankey",
                   orientation: "h",
                   valueformat: "$,.8r",
-                  arrangement: "snap",
+                  arrangement: "perpendicular",
                   node: {
                     pad: 8,
                     thickness: 10,
@@ -92,7 +92,7 @@ const SankeyGraph: FC<Props> = ({ height, txHash, isLoading, data, rangeData, er
                   type: "sankey",
                   orientation: "h",
                   valueformat: "$,.8r",
-                  arrangement: "snap",
+                  arrangement: "perpendicular",
                   node: {
                     pad: 8,
                     thickness: 10,
@@ -148,7 +148,7 @@ const SankeyGraph: FC<Props> = ({ height, txHash, isLoading, data, rangeData, er
                   type: "sankey",
                   orientation: "h",
                   valueformat: "$,.8r",
-                  arrangement: "freeform",
+                  arrangement: "perpendicular",
                   node: {
                     pad: 12,
                     thickness: 30,
