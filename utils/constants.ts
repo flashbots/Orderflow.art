@@ -114,7 +114,7 @@ export const sankeyFrontendColors: Record<string, string> = {
   "DODO X": "#FFF704",
   kyberswap: "#2FCC9F",
   "1inch Labs": "#16354E",
-  Barter: "#FFA856",
+  Barter: "#FF8C20",
   Gnosis_1inch: "#16354E",
   Otex: "#5f5f5f",
   "Arctic Bastion": "#5C6E87",
