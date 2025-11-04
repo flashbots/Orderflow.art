@@ -24,7 +24,7 @@ export default function Header() {
                   width={119}
                 />
               </a>
-              <span className="pt-[5px] font-serif text-gray-700">+</span>
+              <span className="pt-[5px] font-serif text-gray-700">X</span>
               <a
                 href="https://barterswap.xyz"
                 target="_blank"
@@ -89,6 +89,14 @@ export default function Header() {
                 {
                   path: "/avatars/barter.png",
                   twitter: "https://x.com/BarterDeFi",
+                },
+                {
+                  path: "/avatars/Alex_Khailuk.jpeg",
+                  twitter: "https://x.com/Alex_Khailuk",
+                },
+                {
+                  path: "/avatars/real_obbwd.jpeg",
+                  twitter: "https://x.com/real_obbwd",
                 },
               ]}
             />
