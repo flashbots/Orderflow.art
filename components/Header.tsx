@@ -40,7 +40,7 @@ export default function Header() {
               </a>
             </div>
             <p className="text-sm text-gray-600 pb-3">
-              Started by Flashbots, continued by Barter
+              Started by Flashbots, continued by  Barter
             </p>
 
             <Link href="/" className="transition-opacity hover:opacity-70">
@@ -89,6 +89,7 @@ export default function Header() {
                 {
                   path: "/avatars/barter.png",
                   twitter: "https://x.com/BarterDeFi",
+                  spaceBefore: true,
                 },
                 {
                   path: "/avatars/Alex_Khailuk.jpeg",
@@ -97,6 +98,10 @@ export default function Header() {
                 {
                   path: "/avatars/real_obbwd.jpeg",
                   twitter: "https://x.com/real_obbwd",
+                },
+                {
+                  path: "/avatars/grass_the_touch.jpeg",
+                  twitter: "https://x.com/grass_the_touch",
                 },
               ]}
             />

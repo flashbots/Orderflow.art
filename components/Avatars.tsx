@@ -11,7 +11,7 @@ const Avatars: FC<Props> = ({ avatars }) => {
     <div className="flex justify-center -space-x-1 overflow-hidden">
       {avatars.map((avatar: Avatar, i) => (
         <a
-          className="transition-opacity hover:opacity-70"
+          className={`transition-opacity hover:opacity-70 ${avatar.spaceBefore ? "ml-6" : ""}`}
           href={avatar.twitter}
           target="_blank"
           rel="noopener noreferrer"

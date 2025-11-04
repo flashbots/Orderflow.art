@@ -78,6 +78,7 @@ export enum Sankey {
 export type Avatar = {
   path: string;
   twitter: string;
+  spaceBefore?: boolean;
 };
 
 export type Entities = Record<EntityName, string[]>;
