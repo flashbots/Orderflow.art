@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { SelectItem, getEntitiesResponse } from "@/utils/types";
 import { client } from "@/utils/clickhouse";
-import { getExpirationTimestamp, getTimeframeFilter } from "@/utils/helpers";
+import { getExpirationTimestamp } from "@/utils/helpers";
 import { entityColumns, tableName } from "@/utils/constants";
 import { Redis } from "ioredis";
 
@@ -28,22 +28,15 @@ export default async function handler(
 
     for (let i = 0; i < entColumns.length; i++) {
       const baseQuery = `
-      SELECT 
+      SELECT
         ${entColumns[i]},
-        SUM(trade_usd) as total_trade_usd
-      FROM 
+        SUM(total_volume) as total_trade_usd
+      FROM
         ${table}
-      WHERE trade_usd != 0
-      ${
-        timeframe && !Array.isArray(timeframe) && timeframe !== "All"
-          ? "AND " + (await getTimeframeFilter(timeframe, table))
-          : timeframe !== "All"
-            ? "AND " + (await getTimeframeFilter("7d", table))
-            : ""
-      }
-      GROUP BY 
+      WHERE total_volume != 0
+      GROUP BY
         ${entColumns[i]}
-      ORDER BY 
+      ORDER BY
         total_trade_usd DESC`.replace(/\s+/g, " ");
 
       const entityCache: string | null = await redis.get("sql:" + baseQuery);

@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { entityColumns, sankeyFrontendColors, tableName } from "@/utils/constants";
 import { getSankeyDataResponse } from "@/utils/types";
 import { client } from "@/utils/clickhouse";
-import { getExpirationTimestamp, getTimeframeFilter, queryArray } from "@/utils/helpers";
+import { getExpirationTimestamp, queryArray } from "@/utils/helpers";
 import { Redis } from "ioredis";
 
 export default async function handler(
@@ -20,12 +20,7 @@ export default async function handler(
       mempool,
       ofa,
       builder,
-      pairs,
       columns,
-      timeframe,
-      txHash,
-      startTime,
-      endTime,
     } = req.query;
     const entitiesArray = [
       queryArray(frontend),
@@ -35,7 +30,6 @@ export default async function handler(
       queryArray(ofa),
       queryArray(builder),
     ];
-    const pairsArray = queryArray(pairs);
     const columnsArray = queryArray(columns);
 
     let isOf = false;
@@ -62,88 +56,42 @@ export default async function handler(
 
     let filter = "";
     let entityFilter = "";
-    let pairFilter = "";
-    let timeframeFilter = "";
-    let startTimeFilter = "";
-    let endTimeFilter = "";
 
-    if (txHash) {
-      if (Array.isArray(txHash)) {
-        filter = `AND hash IN ('${txHash.join("','")}')`;
-      } else {
-        filter = `AND hash = '${txHash}'`;
-      }
-    } else {
-      // Create filter string for entities
-      if (Object.values(entities).flat(1).length > 0) {
-        const filterStrings: string[] = [];
+    // Create filter string for entities
+    if (Object.values(entities).flat(1).length > 0) {
+      const filterStrings: string[] = [];
 
-        for (const [entityType, ents] of Object.entries(entities)) {
-          if (ents.length > 0) {
-            let entityTypeFilter = "(";
-            for (let i = 0; i < ents.length; i++) {
-              entityTypeFilter += `${entityType} = '${ents[i]}'`;
+      for (const [entityType, ents] of Object.entries(entities)) {
+        if (ents.length > 0) {
+          let entityTypeFilter = "(";
+          for (let i = 0; i < ents.length; i++) {
+            entityTypeFilter += `${entityType} = '${ents[i]}'`;
 
-              if (i !== ents.length - 1) {
-                entityTypeFilter += " OR ";
-              }
+            if (i !== ents.length - 1) {
+              entityTypeFilter += " OR ";
             }
-            entityTypeFilter += ")";
-
-            filterStrings.push(entityTypeFilter);
           }
-        }
+          entityTypeFilter += ")";
 
-        if (filterStrings.length) {
-          entityFilter = "(";
-
-          for (let i = 0; i < filterStrings.length; i++) {
-            if (i !== 0) {
-              entityFilter += ` AND `;
-            }
-            entityFilter += filterStrings[i];
-          }
-          entityFilter += ")";
+          filterStrings.push(entityTypeFilter);
         }
       }
 
-      if (pairsArray.length > 0) {
-        pairFilter = `(${isOf ? "trade_pair" : "token_pair"} IN ('${pairsArray.join("','")}'))`;
-      }
+      if (filterStrings.length) {
+        entityFilter = "(";
 
-      if (!timeframe) {
-        timeframeFilter = await getTimeframeFilter("7d", table);
-      } else if (timeframe && !Array.isArray(timeframe) && timeframe !== "All") {
-        timeframeFilter = await getTimeframeFilter(timeframe, table);
+        for (let i = 0; i < filterStrings.length; i++) {
+          if (i !== 0) {
+            entityFilter += ` AND `;
+          }
+          entityFilter += filterStrings[i];
+        }
+        entityFilter += ")";
       }
+    }
 
-      if (startTime) {
-        startTimeFilter = `(block_time > toDateTime64(${startTime}, 3))`;
-      }
-
-      if (endTime) {
-        endTimeFilter = `(block_time < toDateTime64(${endTime}, 3))`;
-      }
-
-      if (entityFilter) {
-        filter += ` AND ${entityFilter}`;
-      }
-
-      if (pairFilter) {
-        filter += ` AND ${pairFilter}`;
-      }
-
-      if (timeframeFilter) {
-        filter += ` AND ${timeframeFilter}`;
-      }
-
-      if (startTimeFilter) {
-        filter += ` AND ${startTimeFilter}`;
-      }
-
-      if (endTimeFilter) {
-        filter += ` AND ${endTimeFilter}`;
-      }
+    if (entityFilter) {
+      filter += ` AND ${entityFilter}`;
     }
 
     let baseQueries: string[][] = [];
@@ -151,12 +99,12 @@ export default async function handler(
 
     for (let source = 0; source < entColumns.length; source++) {
       const labelQueryString = `
-      SELECT 
+      SELECT
         DISTINCT ${entColumns[source]}
-      FROM ${table} 
+      FROM ${table}
       WHERE ${entColumns[source]} != ''
-      AND 
-          trade_usd != 0 
+      AND
+          total_volume != 0
       ${filter}`.replace(/\s+/g, " ");
 
       labelQueries[entColumns[source]] = labelQueryString;
@@ -168,84 +116,25 @@ export default async function handler(
           }
         }
 
-        let queryString = "";
-
-        if (isOf) {
-          queryString = `
-            SELECT 
-              ${entColumns[source]} as source, 
-              ${entColumns[target]} as target, 
-              SUM(trade_usd) as value
-            FROM 
-              ${table} 
-            WHERE 
-              ${entColumns[source]} != '' 
-            AND 
-              ${entColumns[target]} != '' 
-            AND 
-              trade_usd != 0 
-            ${extraFilter}
-            ${filter} 
-            GROUP BY 
-              source, 
-              target
-            `;
-        } else {
-          if (source < 2) {
-            queryString = `
-            SELECT 
-              ${entColumns[source]} as source, 
-              ${entColumns[target]} as target, 
-              SUM(trade_usd) as value
-            FROM (
-              SELECT 
-                DISTINCT ON (hash)
-                ${entColumns[source]}, 
-                ${entColumns[target]}, 
-                trade_usd
-              FROM 
-                ${table} 
-              WHERE 
-                ${entColumns[source]} != '' 
-              AND 
-                ${entColumns[target]} != '' 
-              AND 
-                trade_usd != 0 
-              ${extraFilter}
-              ${filter}
-            )
-            GROUP BY 
-              source, 
-              target
-            `;
-          } else {
-            queryString = `
-            SELECT
-              ${entColumns[source]} as source,
-              ${entColumns[target]} as target,
-              SUM(amount_usd) as value
-            FROM (
-              SELECT
-                ${entColumns[source]},
-                ${entColumns[target]},
-                amount_usd
-              FROM
-                ${table}
-              WHERE
-                ${entColumns[source]} != ''
-              AND
-                ${entColumns[target]} != ''
-              AND
-                amount_usd != 0
-              ${extraFilter}
-              ${filter}
-            )
-            GROUP BY
-              source,
-              target
-            `;
-          }
-        }
+        let queryString = `
+          SELECT
+            ${entColumns[source]} as source,
+            ${entColumns[target]} as target,
+            SUM(total_volume) as value
+          FROM
+            ${table}
+          WHERE
+            ${entColumns[source]} != ''
+          AND
+            ${entColumns[target]} != ''
+          AND
+            total_volume != 0
+          ${extraFilter}
+          ${filter}
+          GROUP BY
+            source,
+            target
+        `;
 
         baseQueries.push([
           entColumns[source],
@@ -361,65 +250,137 @@ export default async function handler(
 
     await getRequests();
 
+    // Group into Top 10 + Other for each entity column
+    const TOP_N = 20;
+
+    // Calculate total volume for each label in each column
+    const volumeByColumn: Record<string, Record<string, number>> = {};
+    for (const column of entColumns) {
+      volumeByColumn[column] = {};
+    }
+
+    // Sum up volumes for each label
+    for (let i = 0; i < source.length; i++) {
+      const sourceLabel = labelsArray[source[i]];
+      const targetLabel = labelsArray[target[i]];
+      const vol = value[i];
+
+      // Find which column each label belongs to
+      for (const [column, columnLabels] of Object.entries(labels)) {
+        if (columnLabels.includes(sourceLabel)) {
+          volumeByColumn[column][sourceLabel] = (volumeByColumn[column][sourceLabel] || 0) + vol;
+        }
+        if (columnLabels.includes(targetLabel)) {
+          volumeByColumn[column][targetLabel] = (volumeByColumn[column][targetLabel] || 0) + vol;
+        }
+      }
+    }
+
+    // Determine top N for each column
+    const topLabels: Record<string, Set<string>> = {};
+    for (const [column, volumes] of Object.entries(volumeByColumn)) {
+      const sorted = Object.entries(volumes)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, TOP_N)
+        .map(([label]) => label);
+      topLabels[column] = new Set(sorted);
+    }
+
+    // Create mapping from old label to new label (top N or "Other")
+    const labelMapping: Record<string, string> = {};
+    for (const [column, columnLabels] of Object.entries(labels)) {
+      for (const label of columnLabels) {
+        if (topLabels[column].has(label)) {
+          labelMapping[label] = label;
+        } else {
+          labelMapping[label] = `Other (${column})`;
+        }
+      }
+    }
+
+    // Rebuild labels structure with grouped data
+    const newLabels: Record<string, string[]> = {};
+    const newLabelsArray: string[] = [];
+
+    for (const [column, columnLabels] of Object.entries(labels)) {
+      const topN = Array.from(topLabels[column]);
+      const hasOther = columnLabels.length > TOP_N;
+
+      newLabels[column] = hasOther ? [...topN, `Other (${column})`] : topN;
+      newLabelsArray.push(...newLabels[column]);
+    }
+
+    // Create new indices
+    const newIndicies: Record<string, Record<string, number>> = {};
+    let newIndex = 0;
+    for (const [column, columnLabels] of Object.entries(newLabels)) {
+      newIndicies[column] = {};
+      for (const label of columnLabels) {
+        newIndicies[column][label] = newIndex;
+        newIndex++;
+      }
+    }
+
+    // Aggregate links using the new grouping
+    const linkMap = new Map<string, number>();
+
+    for (let i = 0; i < source.length; i++) {
+      const sourceLabel = labelsArray[source[i]];
+      const targetLabel = labelsArray[target[i]];
+      const vol = value[i];
+
+      const newSourceLabel = labelMapping[sourceLabel];
+      const newTargetLabel = labelMapping[targetLabel];
+
+      // Find which columns these belong to
+      let sourceColumn = "";
+      let targetColumn = "";
+      for (const [column, columnLabels] of Object.entries(labels)) {
+        if (columnLabels.includes(sourceLabel)) sourceColumn = column;
+        if (columnLabels.includes(targetLabel)) targetColumn = column;
+      }
+
+      const newSourceIdx = newIndicies[sourceColumn][newSourceLabel];
+      const newTargetIdx = newIndicies[targetColumn][newTargetLabel];
+
+      const key = `${newSourceIdx}-${newTargetIdx}`;
+      linkMap.set(key, (linkMap.get(key) || 0) + vol);
+    }
+
+    // Convert aggregated links back to arrays
+    const newSource: number[] = [];
+    const newTarget: number[] = [];
+    const newValue: number[] = [];
+
+    for (const [key, vol] of linkMap.entries()) {
+      const [src, tgt] = key.split("-").map(Number);
+      newSource.push(src);
+      newTarget.push(tgt);
+      newValue.push(vol);
+    }
+
     const colors = [];
 
     const randomHexColor = () => {
       return "#" + Math.floor(Math.random() * 16777215).toString(16);
     };
 
-    for (const label of labelsArray) {
-      colors.push(sankeyFrontendColors[label] ? sankeyFrontendColors[label] : randomHexColor());
-    }
-
-    const rangeQuery = `
-    SELECT 
-      MIN(block_time) AS startTime, 
-      MAX(block_time) AS endTime, 
-      MIN(block_number) AS startBlock, 
-      MAX(block_number) AS endBlock 
-    FROM ${table}`.replace(/\s+/g, " ");
-
-    const rangeCache: string | null = await redis.get("sql:" + rangeQuery);
-
-    let range: {
-      startTime: string;
-      endTime: string;
-      startBlock: string;
-      endBlock: string;
-    }[] = [];
-
-    if (rangeCache !== null) {
-      range.push(...JSON.parse(rangeCache));
-    } else {
-      const rangeData = await client.query({
-        query: rangeQuery,
-        format: "JSONEachRow",
-      });
-
-      const rangeDataJson: {
-        startTime: string;
-        endTime: string;
-        startBlock: string;
-        endBlock: string;
-      }[] = await rangeData.json();
-
-      await redis.set(
-        "sql:" + rangeQuery,
-        JSON.stringify(rangeDataJson),
-        "EXAT",
-        expirationTimestamp,
-      );
-
-      range.push(...rangeDataJson);
+    for (const label of newLabelsArray) {
+      // Use gray color for "Other" groups
+      if (label.startsWith("Other (")) {
+        colors.push("#999999");
+      } else {
+        colors.push(sankeyFrontendColors[label] ? sankeyFrontendColors[label] : randomHexColor());
+      }
     }
 
     return res.status(200).send({
       data: {
         entityFilter,
-        links: { source, target, value },
-        labels: labelsArray,
+        links: { source: newSource, target: newTarget, value: newValue },
+        labels: newLabelsArray,
         colors,
-        range: range[0],
+        range: null, // No time range data in aggregated tables
       },
     });
   } catch (error) {

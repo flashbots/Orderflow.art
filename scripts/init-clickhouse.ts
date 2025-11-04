@@ -42,6 +42,30 @@ const schemas = {
     ) ENGINE = MergeTree()
     ORDER BY (block_time, block_number)
   `,
+  prodof_aggregated: `
+    CREATE TABLE IF NOT EXISTS orderflow.prodof_aggregated (
+      frontend String,
+      metaaggregator String,
+      solver String,
+      mempool String,
+      ofa String,
+      builder String,
+      total_volume Float64
+    ) ENGINE = SummingMergeTree(total_volume)
+    ORDER BY (frontend, metaaggregator, solver, mempool, ofa, builder)
+  `,
+  prodlq_aggregated: `
+    CREATE TABLE IF NOT EXISTS orderflow.prodlq_aggregated (
+      frontend String,
+      metaaggregator String,
+      solver String,
+      aggregator String,
+      liquidity_src String,
+      pmm String,
+      total_volume Float64
+    ) ENGINE = SummingMergeTree(total_volume)
+    ORDER BY (frontend, metaaggregator, solver, aggregator, liquidity_src, pmm)
+  `,
 };
 
 async function main() {
@@ -74,6 +98,20 @@ async function main() {
     });
     console.log("✓ Table 'orderflow.prodlq' ready\n");
 
+    // Create prodof_aggregated table
+    console.log("Creating table 'orderflow.prodof_aggregated'...");
+    await clickhouse.exec({
+      query: schemas.prodof_aggregated,
+    });
+    console.log("✓ Table 'orderflow.prodof_aggregated' ready\n");
+
+    // Create prodlq_aggregated table
+    console.log("Creating table 'orderflow.prodlq_aggregated'...");
+    await clickhouse.exec({
+      query: schemas.prodlq_aggregated,
+    });
+    console.log("✓ Table 'orderflow.prodlq_aggregated' ready\n");
+
     // Show table info
     console.log("=== Table Information ===\n");
 
@@ -96,6 +134,30 @@ async function main() {
     const lqCols = (await lqDescribe.json()) as Array<{ name: string; type: string }>;
     console.log("orderflow.prodlq columns:");
     lqCols.forEach((col) => {
+      console.log(`  - ${col.name}: ${col.type}`);
+    });
+
+    console.log("");
+
+    const ofAggDescribe = await clickhouse.query({
+      query: "DESCRIBE TABLE orderflow.prodof_aggregated",
+      format: "JSONEachRow",
+    });
+    const ofAggCols = (await ofAggDescribe.json()) as Array<{ name: string; type: string }>;
+    console.log("orderflow.prodof_aggregated columns:");
+    ofAggCols.forEach((col) => {
+      console.log(`  - ${col.name}: ${col.type}`);
+    });
+
+    console.log("");
+
+    const lqAggDescribe = await clickhouse.query({
+      query: "DESCRIBE TABLE orderflow.prodlq_aggregated",
+      format: "JSONEachRow",
+    });
+    const lqAggCols = (await lqAggDescribe.json()) as Array<{ name: string; type: string }>;
+    console.log("orderflow.prodlq_aggregated columns:");
+    lqAggCols.forEach((col) => {
       console.log(`  - ${col.name}: ${col.type}`);
     });
 

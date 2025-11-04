@@ -19,7 +19,7 @@ export type getSankeyDataResponse = {
       endTime: string;
       startBlock: string;
       endBlock: string;
-    };
+    } | null;
   };
   error?: string;
 };
@@ -31,7 +31,7 @@ export type getDataRangeResponse = {
       endTime: string;
       startBlock: string;
       endBlock: string;
-    };
+    } | null;
   };
   error?: string;
 };

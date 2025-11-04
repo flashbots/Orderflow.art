@@ -35,6 +35,26 @@ interface LiquidityRow {
   trade_usd: number;
 }
 
+interface OrderflowAggregatedRow {
+  frontend: string;
+  metaaggregator: string;
+  solver: string;
+  mempool: string;
+  ofa: string;
+  builder: string;
+  total_volume: number;
+}
+
+interface LiquidityAggregatedRow {
+  frontend: string;
+  metaaggregator: string;
+  solver: string;
+  aggregator: string;
+  liquidity_src: string;
+  pmm: string;
+  total_volume: number;
+}
+
 interface DuneWebhookPayload {
   message: string;
   query_result: {
@@ -143,6 +163,30 @@ function transformLiquidityData(rows: any[]): LiquidityRow[] {
   }));
 }
 
+function transformOrderflowAggregatedData(rows: any[]): OrderflowAggregatedRow[] {
+  return rows.map((row) => ({
+    frontend: row.frontend || "",
+    metaaggregator: row.metaaggregator || "",
+    solver: row.solver || "",
+    mempool: row.mempool || "",
+    ofa: row.ofa || "",
+    builder: row.builder || "",
+    total_volume: row.total_volume || 0,
+  }));
+}
+
+function transformLiquidityAggregatedData(rows: any[]): LiquidityAggregatedRow[] {
+  return rows.map((row) => ({
+    frontend: row.frontend || "",
+    metaaggregator: row.metaaggregator || "",
+    solver: row.solver || "",
+    aggregator: row.aggregator || "",
+    liquidity_src: row.liquidity_src || "",
+    pmm: row.pmm || "",
+    total_volume: row.total_volume || 0,
+  }));
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -178,13 +222,15 @@ export default async function handler(
   const queryId = payload.query_result.query_id;
   const executionId = payload.query_result.execution_id;
 
-  // Determine which query this is (orderflow or liquidity)
+  // Determine which query this is
   const QUERY_IDS = {
     orderflow: 6090649,
     liquidity: 6090754,
+    orderflow_aggregated: 6137978,
+    liquidity_aggregated: 6137946,
   };
 
-  let queryType: "orderflow" | "liquidity" | null = null;
+  let queryType: "orderflow" | "liquidity" | "orderflow_aggregated" | "liquidity_aggregated" | null = null;
   let tableName = "";
 
   if (queryId === QUERY_IDS.orderflow) {
@@ -193,6 +239,12 @@ export default async function handler(
   } else if (queryId === QUERY_IDS.liquidity) {
     queryType = "liquidity";
     tableName = "orderflow.prodlq";
+  } else if (queryId === QUERY_IDS.orderflow_aggregated) {
+    queryType = "orderflow_aggregated";
+    tableName = "orderflow.prodof_aggregated";
+  } else if (queryId === QUERY_IDS.liquidity_aggregated) {
+    queryType = "liquidity_aggregated";
+    tableName = "orderflow.prodlq_aggregated";
   } else {
     console.log(`Unknown query_id: ${queryId}`);
     return res.status(200).json({
@@ -223,8 +275,12 @@ export default async function handler(
     let transformed: any[];
     if (queryType === "orderflow") {
       transformed = transformOrderflowData(rows);
-    } else {
+    } else if (queryType === "liquidity") {
       transformed = transformLiquidityData(rows);
+    } else if (queryType === "orderflow_aggregated") {
+      transformed = transformOrderflowAggregatedData(rows);
+    } else {
+      transformed = transformLiquidityAggregatedData(rows);
     }
 
     await uploadToClickHouse(tableName, transformed, queryType);

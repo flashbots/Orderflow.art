@@ -9,6 +9,7 @@
     "lint": "tsc --noEmit",
     "format": "npx prettier --write .",
     "sync:dune": "bun run scripts/sync-dune-data-slow.ts",
+    "sync:aggregated": "bun run scripts/sync-aggregated-data.ts",
     "init:clickhouse": "bun run scripts/init-clickhouse.ts"
   },
   "dependencies": {

@@ -11,45 +11,11 @@ export default async function handler(
   const redis = new Redis(process.env.REDIS_URL!);
 
   try {
-    const { isOrderflow } = req.query;
-    let isOf = false;
-    if (isOrderflow === "true") {
-      isOf = true;
-    }
-
-    const table = isOf ? tableName.orderflow : tableName.liquidity;
-
-    const rangeQuery = `
-    SELECT 
-      MIN(block_time) AS startTime, 
-      MAX(block_time) AS endTime, 
-      MIN(block_number) AS startBlock, 
-      MAX(block_number) AS endBlock 
-    FROM ${table}`.replace(/\s+/g, " ");
-
-    let range: {
-      startTime: string;
-      endTime: string;
-      startBlock: string;
-      endBlock: string;
-    }[] = [];
-
-    const rangeData = await client.query({
-      query: rangeQuery,
-      format: "JSONEachRow",
-    });
-
-    const rangeDataJson: {
-      startTime: string;
-      endTime: string;
-      startBlock: string;
-      endBlock: string;
-    }[] = await rangeData.json();
-    range.push(...rangeDataJson);
-
+    // Aggregated data doesn't contain block_time or block_number
+    // Return null for range
     return res.status(200).send({
       data: {
-        range: range[0],
+        range: null,
       },
     });
   } catch (error) {

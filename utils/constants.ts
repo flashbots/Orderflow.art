@@ -249,8 +249,8 @@ export const categoryTokens = {
 };
 
 export const tableName = {
-  orderflow: "prodof",
-  liquidity: "prodlq",
+  orderflow: "prodof_aggregated",
+  liquidity: "prodlq_aggregated",
 };
 
 export const pairGroupLabels: {
