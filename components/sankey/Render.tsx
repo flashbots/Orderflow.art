@@ -12,6 +12,7 @@ import SankeyFilter from "./SankeyFilter";
 import SankeyGraph from "./SankeyGraph";
 import { SingleValue } from "react-select";
 import { useWindowSize } from "usehooks-ts";
+import { getDateString } from "@/utils/helpers";
 
 export default function SankeyRender() {
   const { height: windowHeight } = useWindowSize();
@@ -59,7 +60,63 @@ export default function SankeyRender() {
 
   return (
     <>
+<div className="border border-b-0 border-dune-300 bg-dune-200 px-4 py-2 text-center">
+  <p><strong>Orderflow.art</strong> was a proof of concept.</p>
 
+  {rangeData?.data?.range && (
+    <p>
+      The data displayed on this site covers the period from{" "}
+      <strong>
+        {Number(rangeData.data.range.startBlock).toLocaleString("us-en", {
+          maximumFractionDigits: 0,
+        })}{" "}
+        ({getDateString(rangeData.data.range.startTime)})
+      </strong>{" "}
+      to{" "}
+      <strong>
+        {Number(rangeData.data.range.endBlock).toLocaleString("us-en", {
+          maximumFractionDigits: 0,
+        })}{" "}
+        ({getDateString(rangeData.data.range.endTime)})
+      </strong>{" "}
+      and is no longer being updated.
+    </p>
+  )}
+
+  <p>If you are interested in current data, here are the available options:</p>
+
+  <ul className="list-none space-y-2">
+    <li>
+      <strong>Allium</strong>
+      <br />
+      Site:{' '}
+      <a
+        href="https://dexanalytics.org/metrics/orderflow"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        https://dexanalytics.org/metrics/orderflow
+      </a>
+      <br />
+      Available chains: Ethereum, Arbitrum, Base, Unichain
+    </li>
+
+    <li>
+      <strong>Barter</strong>
+      <br />
+      Site:{' '}
+      <a
+        href="https://orderflow.barterswap.xyz"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        https://orderflow.barterswap.xyz
+      </a>
+      <br />
+      Available chains: Ethereum
+    </li>
+  </ul>
+</div>
       <div className="border border-dune-300">
         <SankeyFilter
           entityData={entitiesData?.entities}
