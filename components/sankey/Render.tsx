@@ -12,6 +12,7 @@ import SankeyFilter from "./SankeyFilter";
 import SankeyGraph from "./SankeyGraph";
 import { SingleValue } from "react-select";
 import { useWindowSize } from "usehooks-ts";
+import { getDateString } from "@/utils/helpers";
 
 export default function SankeyRender() {
   const { height: windowHeight } = useWindowSize();
@@ -59,7 +60,6 @@ export default function SankeyRender() {
 
   return (
     <>
-
       <div className="border border-dune-300">
         <SankeyFilter
           entityData={entitiesData?.entities}
@@ -82,6 +82,36 @@ export default function SankeyRender() {
           error={sankeyError}
         />
       </div>
+      <div className="border border-dune-300 bg-dune-200 px-6 py-6 rounded-md text-center space-y-6">
+
+  {/* Headline */}
+
+
+  {/* Centered date paragraph */}
+  {rangeData?.data?.range && (
+    <div className="text-left mx-auto text-sm">
+      The data displayed on this site covers the period from{" "}
+      <strong>{getDateString(rangeData.data.range.startTime).split(" ")[0]} ({rangeData.data.range.startBlock})</strong>{" "}
+      to{" "}
+      <strong>{getDateString(rangeData.data.range.endTime).split(" ")[0]} ({rangeData.data.range.endBlock})</strong>{" "}.
+
+        <p className="">
+    One of the top solvers in the game continues to publish daily order flow data for the community. Check them out at         <a
+          href="https://orderflow.barterswap.xyz"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-dune-600 underline hover:text-dune-800"
+        >
+          orderflow.barterswap.xyz !
+        </a>
+  </p>
+    </div>
+  )}
+
+
+</div>
+
+
     </>
   );
 }

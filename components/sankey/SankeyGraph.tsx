@@ -75,9 +75,6 @@ const SankeyGraph: FC<Props> = ({ height, txHash, isLoading, data, rangeData, er
             <Loader title="Loading Sankey Diagram..." />
           </div>
         )}
-        <div className="flex w-full flex-row justify-end bg-dune-50 p-1 font-mono">
-          <DataRange rangeData={rangeData} isPortrait={isPortrait} />
-        </div>
       </div>
     );
   } else if (isSmallDevice) {
@@ -125,9 +122,6 @@ const SankeyGraph: FC<Props> = ({ height, txHash, isLoading, data, rangeData, er
             <Loader title="Loading Sankey Diagram..." />
           </div>
         )}
-        <div className="flex w-full flex-row justify-end bg-dune-50 p-1 font-mono">
-          <DataRange rangeData={rangeData} isPortrait={isPortrait} />
-        </div>
       </div>
     );
   } else {
@@ -185,9 +179,6 @@ const SankeyGraph: FC<Props> = ({ height, txHash, isLoading, data, rangeData, er
             <Loader title="Loading Sankey Diagram..." />
           </div>
         )}
-        <div className="mt-4 flex w-full flex-row justify-end border-t border-t-dune-200 bg-dune-50 p-1 font-mono">
-          <DataRange rangeData={rangeData} isPortrait={isPortrait} />
-        </div>
       </div>
     );
   }
