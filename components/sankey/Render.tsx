@@ -85,63 +85,30 @@ export default function SankeyRender() {
       <div className="border border-dune-300 bg-dune-200 px-6 py-6 rounded-md text-center space-y-6">
 
   {/* Headline */}
-  <p className="font-semibold text-lg">
-    Orderflow.art was a proof of concept.
-  </p>
+
 
   {/* Centered date paragraph */}
   {rangeData?.data?.range && (
-    <div className="text-left max-w-xl mx-auto text-sm">
+    <div className="text-left mx-auto text-sm">
       The data displayed on this site covers the period from{" "}
       <strong>{getDateString(rangeData.data.range.startTime).split(" ")[0]} ({rangeData.data.range.startBlock})</strong>{" "}
       to{" "}
-      <strong>{getDateString(rangeData.data.range.endTime).split(" ")[0]} ({rangeData.data.range.endBlock})</strong>{" "}
-      and is no longer being updated.
-    </div>
-  )}
+      <strong>{getDateString(rangeData.data.range.endTime).split(" ")[0]} ({rangeData.data.range.endBlock})</strong>{" "}.
 
-  {/* LEFT-ALIGNED block */}
-<div className="text-left max-w-xl mx-auto">
-  <p className="text-sm mb-4">
-    If you are interested in current data, here are the available options:
-  </p>
-
-  <ul className="text-sm space-y-4 list-none pl-0">
-    <li>
-      <span className="font-semibold">Allium</span>
-      <div>
-        <a
-          href="https://dexanalytics.org/metrics/orderflow"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-dune-600 underline hover:text-dune-800"
-        >
-          dexanalytics.org/metrics/orderflow
-        </a>
-      </div>
-      <div className="text-xs text-gray-700">
-        Available chains: Ethereum, Arbitrum, Base, Unichain
-      </div>
-    </li>
-
-    <li>
-      <span className="font-semibold">Barter</span>
-      <div>
-        <a
+        <p className="">
+    One of the top solvers in the game continues to publish daily order flow data for the community. Check them out at         <a
           href="https://orderflow.barterswap.xyz"
           target="_blank"
           rel="noopener noreferrer"
           className="text-dune-600 underline hover:text-dune-800"
         >
-          orderflow.barterswap.xyz
+          orderflow.barterswap.xyz !
         </a>
-      </div>
-      <div className="text-xs text-gray-700">
-        Available chains: Ethereum
-      </div>
-    </li>
-  </ul>
-</div>
+  </p>
+    </div>
+  )}
+
+
 </div>
 
 
